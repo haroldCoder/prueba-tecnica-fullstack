@@ -4,6 +4,7 @@ import { useAuth } from '@/common/auth/hooks/use-auth';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { Spinner } from '@/common/components/ui/spinner';
+import { NavMenuMain } from '@/common/components/NavMenuMain';
 
 const App = ({ Component, pageProps }: AppProps) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -34,7 +35,12 @@ const App = ({ Component, pageProps }: AppProps) => {
     );
   }
 
-  return <Component {...pageProps} />;
+  return (
+    <>
+      <NavMenuMain />
+      <Component {...pageProps} />
+    </>
+  );
 };
 
 export default App;
