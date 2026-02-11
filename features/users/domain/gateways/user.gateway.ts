@@ -1,0 +1,7 @@
+import { User } from "@/features/users/domain/entities";
+
+export interface UserGateway {
+    getRoleUser(userId: string): Promise<string>;
+    getAllUsers(): Promise<User[]>;
+    updateUser(userId: string, { role, name }: { role?: string, name?: string }): Promise<void>;
+}
