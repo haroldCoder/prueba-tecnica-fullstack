@@ -23,4 +23,9 @@ export const navMenuItems: NavMenuItem[] = [
         label: 'Reportes',
         roles: ['ADMIN']
     },
+    {
+        href: routes.docs,
+        label: 'Desarrolladores',
+        roles: ['ADMIN']
+    }
 ];

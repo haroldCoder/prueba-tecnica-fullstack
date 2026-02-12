@@ -28,6 +28,7 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   const publicRoutes = ['/auth/login'];
   const isPublicRoute = publicRoutes.includes(router.pathname);
+  const isDocsRoute = router.pathname === '/api-docs';
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated && !isPublicRoute) {
@@ -53,7 +54,7 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {isAuthenticated && user && <NavMenuMain userId={user.id} />}
+      {isAuthenticated && user && !isDocsRoute && <NavMenuMain userId={user.id} />}
       <div className={!isAuthenticated ? "" : "p-4"}>
         <Component {...pageProps} />
       </div>
