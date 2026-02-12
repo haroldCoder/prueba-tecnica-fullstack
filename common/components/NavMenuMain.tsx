@@ -15,6 +15,7 @@ import { useUserRole } from "@/common/infrastructure/users/hooks"
 import { navMenuItems } from "./data/nav-menu-items"
 import { UserRole } from "@/common/domain/users/entities"
 import { SkeletonGeneral } from "@/common/components"
+import { routes } from "../constants/routes"
 
 interface NavMenuMainProps {
     userId: string;
@@ -32,17 +33,31 @@ export function NavMenuMain({ userId }: NavMenuMainProps) {
                     :
                     <NavigationMenu>
                         <NavigationMenuList className="flex gap-2">
-                            {
-                                navMenuItems.filter((item) => item.roles.includes(data?.role! as UserRole)).map((item) => (
-                                    <NavigationMenuItem key={item.href}>
-                                        <Link href={item.href} legacyBehavior passHref>
-                                            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                                                <p className="text-lg">{item.label}</p>
-                                            </NavigationMenuLink>
-                                        </Link>
-                                    </NavigationMenuItem>
-                                ))
-                            }
+                            {navMenuItems
+                                .filter((item) =>
+                                    item.roles.includes(data?.role as UserRole)
+                                )
+                                .map((item) => {
+                                    const isDocs = item.href === routes.docs;
+
+                                    return (
+                                        <NavigationMenuItem key={item.href}>
+                                            <Link href={item.href} legacyBehavior passHref>
+                                                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                                                    {isDocs ? (
+                                                        <div className="py-2 px-4 rounded-full bg-blueCyan">
+                                                            <p className="text-md font-semibold text-white">
+                                                                {item.label}
+                                                            </p>
+                                                        </div>
+                                                    ) : (
+                                                        <p className="text-lg">{item.label}</p>
+                                                    )}
+                                                </NavigationMenuLink>
+                                            </Link>
+                                        </NavigationMenuItem>
+                                    );
+                                })}
                         </NavigationMenuList>
                     </NavigationMenu>
             }

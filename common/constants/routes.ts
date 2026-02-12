@@ -3,4 +3,5 @@ export const routes = {
     movements: '/movements',
     users: '/users',
     reports: '/reports',
+    docs: '/api-docs',
 }
