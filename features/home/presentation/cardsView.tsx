@@ -1,67 +1,52 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/common/components/ui/card'
 import Image from 'next/image'
 import React from 'react'
-import IconIncome from '@/common/assets/income.svg'
-import IconReport from '@/common/assets/report.svg'
-import IconUsers from '@/common/assets/users.svg'
 import Link from 'next/link'
-import { routes } from '@/common/constants/routes'
+import { useUserRole } from '@/common/infrastructure/users/hooks'
+import { cardDashboardFeatures } from './data/card-dashboard-features'
+import { UserRole } from '@/common/domain/users/entities'
+import { SkeletonGeneral } from '@/common/components'
+import { Skeleton } from '@/common/components/ui/skeleton'
 
+interface CardsViewProps {
+    userId: string;
+}
 
-const CardsView = () => {
+const CardsView = ({ userId }: CardsViewProps) => {
+    const { data, isLoading } = useUserRole(userId);
+
+    if (isLoading) {
+        return (
+            <div className='flex gap-6 flex-col justify-around items-center overflow-auto py-4'>
+                <SkeletonGeneral />
+                <Skeleton className='h-28 w-full bg-gray-500' />
+            </div>
+        );
+    }
+
     return (
         <div className='flex gap-6 flex-row justify-around items-center overflow-auto py-4'>
-            <Link href={routes.movements}>
-                <Card className='hover:bg-blue-900'>
-                    <CardHeader>
-                        <CardTitle className='text-center'>Sistema de gestión de ingresos y gastos</CardTitle>
-                    </CardHeader>
-                    <CardContent className='flex justify-center'>
-                        <Image src={IconIncome} width={200} height={200} alt="Icon Income" />
-                    </CardContent>
-                    <CardFooter>
-                        <ol className="list-disc list-inside space-y-1">
-                            <li>Vista de Ingresos y Egresos</li>
-                            <li>Formulario de Nuevo Ingreso/Egreso</li>
-                        </ol>
-                    </CardFooter>
-                </Card>
-            </Link>
-
-            <Link href={routes.users}>
-                <Card className='hover:bg-blue-900'>
-                    <CardHeader>
-                        <CardTitle className='text-center'>Gestión de usuarios</CardTitle>
-                    </CardHeader>
-                    <CardContent className='flex justify-center'>
-                        <Image src={IconUsers} width={200} height={200} alt="Icon Users" />
-                    </CardContent>
-                    <CardFooter className='text-center'>
-                        <ol className="list-disc list-inside space-y-1">
-                            <li>Vista de Usuarios</li>
-                            <li>Edición de Usuario</li>
-                        </ol>
-                    </CardFooter>
-                </Card>
-            </Link>
-
-            <Link href={routes.reports}>
-                <Card className='hover:bg-blue-900'>
-                    <CardHeader>
-                        <CardTitle className='text-center'>Reportes</CardTitle>
-                    </CardHeader>
-                    <CardContent className='flex justify-center'>
-                        <Image src={IconReport} width={200} height={200} alt="Icon Report" />
-                    </CardContent>
-                    <CardFooter>
-                        <ol className="list-disc list-inside space-y-1">
-                            <li>gráfico de movimientos financieros</li>
-                            <li>Mostrar el saldo actual</li>
-                            <li>descargar el reporte en formato CSV</li>
-                        </ol>
-                    </CardFooter>
-                </Card>
-            </Link>
+            {
+                cardDashboardFeatures.filter((feature) => feature.roles.includes(data?.role! as UserRole)).map((feature) => (
+                    <Link href={feature.href}>
+                        <Card className='hover:bg-blue-900'>
+                            <CardHeader>
+                                <CardTitle className='text-center'>{feature.title}</CardTitle>
+                            </CardHeader>
+                            <CardContent className='flex justify-center'>
+                                <Image src={feature.image} width={200} height={200} alt={feature.alt} />
+                            </CardContent>
+                            <CardFooter>
+                                <ol className="list-disc list-inside space-y-1">
+                                    {feature.items.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                    ))}
+                                </ol>
+                            </CardFooter>
+                        </Card>
+                    </Link>
+                ))
+            }
         </div>
     )
 }
