@@ -7,6 +7,7 @@ const config = {
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
     './common/**/*.{ts,tsx}',
+    './features/**/*.{ts,tsx}',
   ],
   prefix: '',
   theme: {
@@ -22,6 +23,7 @@ const config = {
         border: 'var(--border)',
         input: 'var(--input)',
         ring: 'var(--ring)',
+        blueCyan: 'var(--blue-cyan)',
         background: 'var(--background)',
         foreground: 'var(--foreground)',
         primary: {

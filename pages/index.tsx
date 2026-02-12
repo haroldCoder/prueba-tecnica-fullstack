@@ -1,5 +1,7 @@
-const Home = () => {
-    return <main className=''>Home</main>;
+import Home from "@/features/home/presentation/home";
+
+const HomePage = () => {
+    return <Home />;
 };
 
-export default Home;
+export default HomePage;

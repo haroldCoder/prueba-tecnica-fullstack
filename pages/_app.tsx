@@ -38,7 +38,9 @@ const App = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <NavMenuMain />
-      <Component {...pageProps} />
+      <div className="p-4">
+        <Component {...pageProps} />
+      </div>
     </>
   );
 };
