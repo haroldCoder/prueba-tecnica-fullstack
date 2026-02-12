@@ -1,4 +1,4 @@
-import { User } from "@/features/users/domain/entities";
+import { User } from "@/common/domain/users/entities";
 
 export interface UserGateway {
     getRoleUser(userId: string): Promise<string>;

@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
-import { User } from "@/features/users/domain/entities/user.entity";
-import { UserRole } from "@/features/users/domain/entities/user.entity";
+import { User } from "@/common/domain/users/entities/user.entity";
+import { UserRole } from "@/common/domain/users/entities/user.entity";
 
 export const UserMapper = {
     toDomain(raw: Prisma.UserGetPayload<{}>): User {

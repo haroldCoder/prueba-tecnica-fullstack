@@ -1,5 +1,5 @@
 import { UserGateway } from "@/features/users/domain/gateways";
-import { User } from "@/features/users/domain/entities";
+import { User } from "@/common/domain/users/entities";
 import { prisma } from "@/common/infrastructure/database/prisma.client";
 import { UserMapper } from "@/features/users/infrastructure/mappers";
 

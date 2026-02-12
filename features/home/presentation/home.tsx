@@ -1,7 +1,10 @@
 import React from 'react'
 import CardsView from './cardsView'
+import { useAuth } from '@/common/auth/hooks/use-auth'
 
 const Home = () => {
+    const { user } = useAuth();
+
     return (
         <main>
             <section className="flex flex-row justify-around overflow-auto">
@@ -15,7 +18,7 @@ const Home = () => {
                 </div>
                 <div className='h-screen flex flex-col gap-6 items-center justify-end'>
                     <span className='text-gray-400 text-start text-lg'>Elije una accion para iniciar.</span>
-                    <CardsView />
+                    <CardsView userId={user?.id || ""} />
                 </div>
             </section>
         </main>
