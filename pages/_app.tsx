@@ -37,8 +37,8 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   return (
     <>
-      <NavMenuMain />
-      <div className="p-4">
+      {isAuthenticated && <NavMenuMain />}
+      <div className={!isAuthenticated ? "" : "p-4"}>
         <Component {...pageProps} />
       </div>
     </>
