@@ -9,10 +9,11 @@ import { Button } from '@base-ui/react';
 import { format } from 'date-fns';
 import { dataTableColumns } from './data/data-table';
 import Link from 'next/link';
+import { UserRoleEnum } from '@/common/domain/users/entities';
 
 const Movements = () => {
     const { user } = useAuth();
-    const { data, isLoading } = useUserRole(user?.id || '');
+    const { data: dataRole, isLoading } = useUserRole(user?.id || '');
     const { data: movements, isLoading: movementsLoading } = useFetchMovements();
 
     const formattedMovements = useMemo(() => {
@@ -46,11 +47,16 @@ const Movements = () => {
                     })) || []}
                 />
             </div>
-            <div className='flex justify-end w-full px-16'>
-                <Link href="/movements/create">
-                    <Button className='bg-blueCyan px-4 py-2 rounded-full'>Agregar movimiento</Button>
-                </Link>
-            </div>
+
+            {
+                dataRole?.role === UserRoleEnum.ADMIN && (
+                    <div className='flex justify-end w-full px-16'>
+                        <Link href="/movements/create">
+                            <Button className='bg-blueCyan px-4 py-2 rounded-full'>Agregar movimiento</Button>
+                        </Link>
+                    </div>
+                )
+            }
         </div>
     )
 }

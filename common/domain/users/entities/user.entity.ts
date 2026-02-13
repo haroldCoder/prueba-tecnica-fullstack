@@ -1,5 +1,10 @@
 export type UserRole = 'ADMIN' | 'USER';
 
+export const UserRoleEnum = {
+    ADMIN: 'ADMIN',
+    USER: 'USER',
+};
+
 export type User = {
     id: string;
     name: string;
