@@ -1,5 +1,6 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { fetchUserRole, RoleResponse } from '@/common/infrastructure/users/api';
+import { QueryOptions } from '@/common/infrastructure/types';
 
 
 export const userRoleKeys = {
@@ -7,14 +8,10 @@ export const userRoleKeys = {
     byId: (userId: string) => [...userRoleKeys.all, userId] as const,
 };
 
-export function useUserRole(
+export const useUserRole = (
     userId: string,
-    options?: {
-        enabled?: boolean;
-        staleTime?: number;
-        cacheTime?: number;
-    }
-): UseQueryResult<RoleResponse, Error> {
+    options?: QueryOptions
+): UseQueryResult<RoleResponse, Error> => {
     return useQuery({
         queryKey: userRoleKeys.byId(userId),
         queryFn: () => fetchUserRole(userId),

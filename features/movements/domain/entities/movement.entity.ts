@@ -9,4 +9,5 @@ export interface Movement {
     date: Date;
     createdAt: Date;
     updatedAt: Date;
+    user: { name: string };
 }

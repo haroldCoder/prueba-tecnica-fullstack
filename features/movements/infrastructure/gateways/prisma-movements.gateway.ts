@@ -24,7 +24,11 @@ export class PrismaMovementsGateway implements MovementGateway {
         }
     }
     async getMovements(): Promise<Movement[]> {
-        const movements = await prisma.movement.findMany();
+        const movements = await prisma.movement.findMany({
+            include: {
+                user: { select: { name: true } },
+            },
+        });
         return movements.map(MovementMapper.toDomain);
     }
 }
