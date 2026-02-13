@@ -27,6 +27,7 @@ model User {
   id            String    @id
   name          String
   email         String
+  phone         String?
   emailVerified Boolean
   image         String?
   createdAt     DateTime

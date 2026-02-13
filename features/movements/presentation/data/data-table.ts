@@ -1,13 +1,7 @@
 import { Column } from "@/common/components/DataTable";
+import { MovementTableDTO } from "../../application/dto/movement-table.dto";
 
-interface MovementData {
-    concept: string
-    amount: number
-    date: string
-    user: string
-}
-
-export const dataTableColumns: Column<MovementData>[] = [
+export const dataTableColumns: Column<MovementTableDTO>[] = [
     {
         accessorKey: "concept",
         header: "Concepto",
