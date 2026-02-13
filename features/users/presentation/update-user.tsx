@@ -83,6 +83,7 @@ const UpdateUser = () => {
                             control={control}
                             render={({ field }) => (
                                 <Select
+                                    disabled={user?.id === id}
                                     value={field.value}
                                     onValueChange={field.onChange}
                                 >
