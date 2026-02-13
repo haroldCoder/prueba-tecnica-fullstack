@@ -2,18 +2,17 @@ import { Movement } from "@/features/movements/domain/entities";
 import { MovementGateway } from "@/features/movements/domain/gateways";
 import { prisma } from "@/common/infrastructure/database/prisma.client";
 import { MovementMapper } from "@/features/movements/infrastructure/mappers";
+import { CreateMovementDto } from "@/features/movements/application/dto";
 
 export class PrismaMovementsGateway implements MovementGateway {
-    async createMovement(movement: Movement): Promise<string> {
+    async createMovement(movement: CreateMovementDto): Promise<string> {
         try {
-            const { id, ...rest } = movement;
-
-            const createdMovement = await prisma.movement.create({
+            await prisma.movement.create({
                 data: {
-                    type: rest.type,
-                    concept: rest.concept,
-                    amount: rest.amount,
-                    date: rest.date,
+                    type: movement.type,
+                    concept: movement.concept,
+                    amount: movement.amount,
+                    date: movement.date,
                     userId: movement.userId,
                 },
             });
@@ -24,7 +23,11 @@ export class PrismaMovementsGateway implements MovementGateway {
         }
     }
     async getMovements(): Promise<Movement[]> {
-        const movements = await prisma.movement.findMany();
+        const movements = await prisma.movement.findMany({
+            include: {
+                user: { select: { name: true } },
+            },
+        });
         return movements.map(MovementMapper.toDomain);
     }
 }

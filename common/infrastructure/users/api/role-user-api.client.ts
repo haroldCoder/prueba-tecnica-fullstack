@@ -6,7 +6,7 @@ export interface RoleError {
     message: string;
 }
 
-export async function fetchUserRole(userId: string): Promise<RoleResponse> {
+export const fetchUserRole = async (userId: string): Promise<RoleResponse> => {
     const response = await fetch(`/api/auth/${userId}/role`, {
         method: 'GET',
         headers: {
