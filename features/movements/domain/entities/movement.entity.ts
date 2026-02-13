@@ -1,5 +1,10 @@
 export type MovementType = "INCOME" | "EXPENSE";
 
+export enum MovementTypeEnum {
+    INCOME = "INCOME",
+    EXPENSE = "EXPENSE"
+}
+
 export interface Movement {
     id: string;
     userId: string;

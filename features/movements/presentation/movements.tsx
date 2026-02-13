@@ -8,6 +8,7 @@ import styles from './styles/movements.module.css';
 import { Button } from '@base-ui/react';
 import { format } from 'date-fns';
 import { dataTableColumns } from './data/data-table';
+import Link from 'next/link';
 
 const Movements = () => {
     const { user } = useAuth();
@@ -46,7 +47,9 @@ const Movements = () => {
                 />
             </div>
             <div className='flex justify-end w-full px-16'>
-                <Button className='bg-blueCyan px-4 py-2 rounded-full'>Agregar movimiento</Button>
+                <Link href="/movements/create">
+                    <Button className='bg-blueCyan px-4 py-2 rounded-full'>Agregar movimiento</Button>
+                </Link>
             </div>
         </div>
     )

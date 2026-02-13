@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Spinner } from '@/common/components/ui/spinner';
 import { NavMenuMain } from '@/common/components/NavMenuMain';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from '@/common/components/ui/sonner';
 
 
 const App = ({ Component, pageProps }: AppProps) => {
@@ -57,6 +58,7 @@ const App = ({ Component, pageProps }: AppProps) => {
       {isAuthenticated && user && !isDocsRoute && <NavMenuMain userId={user.id} />}
       <div className={!isAuthenticated ? "" : "p-4"}>
         <Component {...pageProps} />
+        <Toaster position='top-center' richColors />
       </div>
     </QueryClientProvider>
   );

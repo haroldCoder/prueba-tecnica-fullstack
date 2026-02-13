@@ -1,5 +1,6 @@
 import { protectedHandler } from "@/common/auth/protected";
 import { DiFactory } from "@/common/factory";
+import { CreateMovementDto } from "@/features/movements/application/dto";
 import { CreateMovementUseCase } from "@/features/movements/application/use-cases";
 
 /**
@@ -51,7 +52,13 @@ export default protectedHandler(async function handler(req, res) {
             DiFactory.movementGateway()
         );
 
-        const movements = await useCase.execute(req.body);
+        const { type, concept, amount, date, userId } = req.body as CreateMovementDto;
+
+        if (!type || !concept || !amount || !date || !userId) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        const movements = await useCase.execute({ type, concept, amount, date, userId });
 
         return res.status(200).json(movements);
     } catch (error: any) {
