@@ -14,6 +14,11 @@ export class PrismaUserGateway implements UserGateway {
         return users.map(UserMapper.toDomain);
     }
 
+    async getUserById(userId: string): Promise<User | null> {
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+        return user ? UserMapper.toDomain(user) : null;
+    }
+
     async updateUser(userId: string, { role, name }: { role?: string, name?: string }): Promise<void> {
         await prisma.user.update({ where: { id: userId }, data: { role, name } });
     }

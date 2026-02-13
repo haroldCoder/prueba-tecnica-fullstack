@@ -1,4 +1,4 @@
-.movementsTable {
+.table {
     background-color: black;
     color: var(--foreground);
     border-radius: 0.5rem;
@@ -6,12 +6,12 @@
     max-width: 1200px;
 }
 
-.movementsTable thead th {
+.table thead th {
     text-align: center;
     font-weight: 800;
 }
 
-.movementsTable tbody td {
+.table tbody td {
     text-align: center;
     color: var(--muted-foreground);
 }
