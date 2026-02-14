@@ -6,8 +6,13 @@ import { GetChartUseCase } from "@/features/reports/application/use-cases/get-ch
  * @swagger
  * /api/reports/chart:
  *   get:
- *     summary: Obtiene datos para gráficos de movimientos
- *     description: Endpoint protegido que retorna datos estructurados para visualizar ingresos y egresos en gráficos
+ *     summary: Obtiene todos los movimientos individuales para gráficos
+ *     description: |
+ *       Endpoint protegido que retorna arreglos con TODOS los montos individuales de ingresos y egresos.
+ *       Cada elemento en los arreglos representa un movimiento individual ordenado por fecha.
+ *       - Si el movimiento es INCOME: el valor aparece en el arreglo 'income' y 0 en 'expense'
+ *       - Si el movimiento es EXPENSE: el valor aparece en el arreglo 'expense' y 0 en 'income'
+ *       - labels: contiene las fechas de cada movimiento en formato YYYY-MM-DD
  *     tags:
  *       - Reports
  *     security:
@@ -21,12 +26,28 @@ import { GetChartUseCase } from "@/features/reports/application/use-cases/get-ch
  *               type: object
  *               properties:
  *                 chart:
- *                   $ref: '#/components/schemas/ChartMovementsResponse'
+ *                   type: object
+ *                   properties:
+ *                     labels:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       description: Arreglo de fechas en formato YYYY-MM-DD para cada movimiento
+ *                     income:
+ *                       type: array
+ *                       items:
+ *                         type: number
+ *                       description: Arreglo con todos los montos de ingresos (0 si el movimiento es egreso)
+ *                     expense:
+ *                       type: array
+ *                       items:
+ *                         type: number
+ *                       description: Arreglo con todos los montos de egresos (0 si el movimiento es ingreso)
  *             example:
  *               chart:
- *                 labels: ["Enero", "Febrero", "Marzo"]
- *                 income: [1500, 2000, 1800]
- *                 expense: [800, 950, 1100]
+ *                 labels: ["2026-02-01", "2026-02-05", "2026-02-10", "2026-02-15"]
+ *                 income: [1500, 0, 2000, 0]
+ *                 expense: [0, 500, 0, 800]
  *       401:
  *         description: No autenticado
  *       405:
