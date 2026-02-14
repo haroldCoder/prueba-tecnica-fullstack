@@ -22,12 +22,26 @@ export class PrismaMovementsGateway implements MovementGateway {
             throw error;
         }
     }
-    async getMovements(): Promise<Movement[]> {
-        const movements = await prisma.movement.findMany({
-            include: {
-                user: { select: { name: true } },
-            },
-        });
-        return movements.map(MovementMapper.toDomain);
+    async getMovements(page: number = 1, pageSize: number = 10): Promise<{ movements: Movement[], total: number }> {
+        const skip = (page - 1) * pageSize;
+
+        const [movements, total] = await Promise.all([
+            prisma.movement.findMany({
+                skip,
+                take: pageSize,
+                include: {
+                    user: { select: { name: true } },
+                },
+                orderBy: {
+                    date: 'desc'
+                }
+            }),
+            prisma.movement.count()
+        ]);
+
+        return {
+            movements: movements.map(MovementMapper.toDomain),
+            total
+        };
     }
 }

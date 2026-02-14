@@ -1,18 +1,25 @@
 import { User } from "@/common/domain/users/entities";
+import { ResponseFetchUsersDto } from "@/features/users/infrastructure/dto";
+import { QueryParamsDto } from "@/common/infrastructure/dto";
 
 export type UserError = {
     message: string;
 }
 
-export const fetchUsers = async (): Promise<User[]> => {
-    const response = await fetch('/api/users/all');
+export const fetchUsers = async (params?: QueryParamsDto): Promise<ResponseFetchUsersDto> => {
+    const response = await fetch(`/api/users/all?page=${params?.page}&pageSize=${params?.pageSize}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
 
     if (!response.ok) {
         const error: UserError = await response.json();
         throw new Error(error.message || 'Failed to fetch users');
     }
 
-    const data: User[] = await response.json();
+    const data: ResponseFetchUsersDto = await response.json();
     return data;
 }
 

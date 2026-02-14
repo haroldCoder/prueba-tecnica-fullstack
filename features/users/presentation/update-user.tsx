@@ -4,9 +4,10 @@ import { Button } from '@/common/components/ui/button';
 import { useParams, useRouter } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
 import { useEffect } from 'react';
-import { useFetchUserById, useUpdateUser } from '@/features/users/infrastructure/hooks';
+import { useFetchUserById, usersKeys, useUpdateUser } from '@/features/users/infrastructure/hooks';
 import { Spinner } from '@/common/components/ui/spinner';
 import { roleFormOptions } from '@/features/users/presentation/data';
+import { useQueryClient } from '@tanstack/react-query';
 
 const UpdateUser = () => {
     const params = useParams();
@@ -15,6 +16,7 @@ const UpdateUser = () => {
 
     const { data: user, isLoading } = useFetchUserById(id);
     const { updateUser, loading: updating } = useUpdateUser();
+    const queryClient = useQueryClient();
 
     const { control, handleSubmit, reset } = useForm({
         defaultValues: {
@@ -37,6 +39,7 @@ const UpdateUser = () => {
             { userId: id, data },
             {
                 onSuccess: () => {
+                    queryClient.invalidateQueries({ queryKey: usersKeys.all });
                     setTimeout(() => {
                         router.push('/users');
                     }, 1500);

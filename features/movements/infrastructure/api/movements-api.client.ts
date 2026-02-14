@@ -1,12 +1,14 @@
-import { CreateMovementDto } from "../../application/dto";
-import { Movement } from "../../domain/entities";
+import { CreateMovementDto } from "@/features/movements/application/dto";
+import { Movement } from "@/features/movements/domain/entities";
+import { QueryParamsDto } from "@/common/infrastructure/dto";
+import { ResponseFetchMovementsDto } from "../dto";
 
 interface MovementError {
     message: string;
 }
 
-export const fetchMovements = async (): Promise<Movement[]> => {
-    const response = await fetch('/api/movements/all', {
+export const fetchMovements = async (params?: QueryParamsDto): Promise<ResponseFetchMovementsDto> => {
+    const response = await fetch(`/api/movements/all?page=${params?.page}&pageSize=${params?.pageSize}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

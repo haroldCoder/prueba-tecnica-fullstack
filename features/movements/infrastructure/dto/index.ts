@@ -1,0 +1,1 @@
+export * from './response-fetch-movements.dto';

@@ -10,6 +10,8 @@ import { useCreateMovement } from '@/features/movements/infrastructure/hooks'
 import { useAuth } from '@/common/auth/hooks/use-auth'
 import { Spinner } from '@/common/components/ui/spinner'
 import { DialogMovement } from '@/features/movements/presentation/components'
+import { useQueryClient } from '@tanstack/react-query'
+import { movementKey } from '@/features/movements/infrastructure/hooks/use-fetch-movements'
 
 const CreateMovement = () => {
     const form = useForm<CreateMovementForm>({
@@ -25,11 +27,18 @@ const CreateMovement = () => {
     const { user } = useAuth();
     const { createMovementAsync, loading } = useCreateMovement();
     const [open, setOpen] = useState(false);
+    const queryClient = useQueryClient();
 
     const onSubmit = async (data: CreateMovementForm) => {
         await createMovementAsync({ ...data, userId: user?.id || "" })
             .then(() => {
                 form.reset();
+                // ⚠️ Se invalidan todas las queries de movimientos porque la API devuelve los datos ordenados por fecha.
+                // Cuando se crea, edita o elimina un movimiento, el orden puede cambiar,
+                // afectando múltiples páginas o filtros cacheados.
+                // Por eso es necesario refrescar todas las queries relacionadas.
+                // Se sacrifica un poco el back, para lograr mejor experiencia de usuario
+                queryClient.invalidateQueries({ queryKey: movementKey.all });
                 setOpen(true);
             });
     };

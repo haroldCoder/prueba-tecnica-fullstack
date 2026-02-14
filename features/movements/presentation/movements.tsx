@@ -10,22 +10,25 @@ import { format } from 'date-fns';
 import { dataTableColumns } from './data/data-table';
 import Link from 'next/link';
 import { UserRoleEnum } from '@/common/domain/users/entities';
+import { useState } from 'react';
+import { QueryParamsDto } from '@/common/infrastructure/dto';;
 
 const Movements = () => {
     const { user } = useAuth();
+    const [params, setParams] = useState<QueryParamsDto>({ page: 1, pageSize: 2 });
     const { data: dataRole, isLoading } = useUserRole(user?.id || '');
-    const { data: movements, isLoading: movementsLoading } = useFetchMovements();
+    const { data: movementsData, isLoading: movementsLoading } = useFetchMovements({ params });
 
     const formattedMovements = useMemo(() => {
-        if (!movements) return []
+        if (!movementsData) return []
 
-        return movements.map((movement) => ({
+        return movementsData.movements.map((movement) => ({
             ...movement,
             date: format(new Date(movement.date), 'yyyy/MM/dd'),
         }))
-    }, [movements])
+    }, [movementsData])
 
-    if (isLoading || movementsLoading) {
+    if (isLoading) {
         return (
             <div className="flex justify-center h-screen">
                 <Spinner />
@@ -45,6 +48,13 @@ const Movements = () => {
                         date: movement.date,
                         user: movement.user.name
                     })) || []}
+                    pagination={{
+                        currentPage: params.page!,
+                        pageSize: params.pageSize!,
+                        total: movementsData?.total || 0,
+                        onPageChange: (page: number) => setParams(prev => ({ ...prev, page })),
+                    }}
+                    loading={movementsLoading}
                 />
             </div>
 
