@@ -26,7 +26,9 @@ export function NavMenuMain({ userId }: NavMenuMainProps) {
 
     return (
         <div className="flex w-full justify-between px-8 py-5">
-            <Image src={logoPrevalent} alt="Logo" width={250} height={150} />
+            <Link href={routes.home}>
+                <Image src={logoPrevalent} alt="Logo" width={250} height={150} />
+            </Link>
             {
                 isLoading ?
                     <SkeletonGeneral />
