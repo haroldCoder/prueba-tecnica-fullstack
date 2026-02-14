@@ -24,8 +24,8 @@ const CreateMovement = () => {
     const { user } = useAuth();
     const { createMovementAsync, loading } = useCreateMovement();
 
-    const onSubmit = (data: CreateMovementForm) => {
-        createMovementAsync({ ...data, userId: user?.id || "" });
+    const onSubmit = async (data: CreateMovementForm) => {
+        await createMovementAsync({ ...data, userId: user?.id || "" });
         form.reset();
     };
 

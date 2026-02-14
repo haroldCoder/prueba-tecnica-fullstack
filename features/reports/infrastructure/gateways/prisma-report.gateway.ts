@@ -11,36 +11,49 @@ export class PrismaReportGateway implements ReportGateway {
         this.movementsGateway = DiFactory.movementGateway();
     }
 
+    /**
+     * Genera la información necesaria para construir el gráfico de movimientos.
+     *
+     * 🔄 Actualización:
+     * - Se ordenan los movimientos por fecha ascendente.
+     * - Se separan los montos en income y expense.
+     * - Se generan labels en formato YYYY-MM-DD.
+     * 
+     *  La idea era solo mostrar dos barras con el total de ingresos y egresos, 
+     *  pero al final se opto por mostrar los movimientos individuales.
+     *
+     * @returns {ChartMovementsResponse} Datos estructurados para el gráfico.
+     */
     async generateChartMovements(): Promise<ChartMovementsResponse> {
         const movements = await this.movementsGateway.getMovements();
 
-        const grouped: Record<
-            string,
-            { income: number; expense: number }
-        > = {};
+        const sortedMovements = movements.sort((a, b) =>
+            a.date.getTime() - b.date.getTime()
+        );
 
-        for (const movement of movements) {
-            const month = movement.date.toISOString().slice(0, 7);
+        const incomeAmounts: number[] = [];
+        const expenseAmounts: number[] = [];
+        const labels: string[] = [];
 
-            if (!grouped[month]) {
-                grouped[month] = { income: 0, expense: 0 };
-            }
+        for (const movement of sortedMovements) {
+            const dateLabel = movement.date.toISOString().split('T')[0];
+            labels.push(dateLabel);
 
             const amount = Number(movement.amount);
 
             if (movement.type === 'INCOME') {
-                grouped[month].income += amount;
+                incomeAmounts.push(amount);
+                expenseAmounts.push(0);
             } else {
-                grouped[month].expense += amount;
+                incomeAmounts.push(0);
+                expenseAmounts.push(amount);
             }
         }
 
-        const labels = Object.keys(grouped).sort();
-
         return {
             labels,
-            income: labels.map((label) => grouped[label].income),
-            expense: labels.map((label) => grouped[label].expense),
+            income: incomeAmounts,
+            expense: expenseAmounts,
         };
     }
 
@@ -54,13 +67,38 @@ export class PrismaReportGateway implements ReportGateway {
         return balance;
     }
 
-    async generateCSVReport(): Promise<string> {
-        const reports = await prisma.report.findMany();
 
-        const csv = reports.map((report) => {
-            return `${report.id},${report.totalIncome},${report.totalExpense},${report.balance},${report.generatedBy},${report.generatedAt}`;
+    /**
+     * Genera un reporte en formato CSV con encabezados y datos de usuarios.
+     * 
+     * 🔄 Actualización:
+     * - Se agregó la fila de encabezados al inicio del CSV
+     * - Se realiza JOIN con la tabla User para obtener el nombre del usuario
+     * - Se formatea correctamente la fecha de generación
+     * 
+     * @returns {Promise<string>} Contenido CSV completo con encabezados y datos
+     */
+    async generateCSVReport(): Promise<string> {
+        const reports = await prisma.report.findMany({
+            include: {
+                user: {
+                    select: {
+                        name: true,
+                    },
+                },
+            },
+            orderBy: {
+                generatedAt: 'desc',
+            },
         });
 
-        return csv.join("\n");
+        const { CSV_REPORT_HEADERS_LINE } = await import("@/features/reports/domain/constants");
+
+        const csvRows = reports.map((report) => {
+            const formattedDate = report.generatedAt.toISOString().split('T')[0];
+            return `${report.id},${report.totalIncome},${report.totalExpense},${report.balance},${report.user.name},${formattedDate}`;
+        });
+
+        return [CSV_REPORT_HEADERS_LINE, ...csvRows].join("\n");
     }
 }
