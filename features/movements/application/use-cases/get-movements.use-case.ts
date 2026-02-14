@@ -3,7 +3,7 @@ import { MovementGateway } from "../../domain/gateways";
 
 export class GetMovementsUseCase {
     constructor(private readonly movementGateway: MovementGateway) { }
-    async execute(): Promise<Movement[]> {
-        return this.movementGateway.getMovements();
+    async execute(page?: number, pageSize?: number): Promise<{ movements: Movement[], total: number }> {
+        return this.movementGateway.getMovements(page, pageSize);
     }
 }

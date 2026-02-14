@@ -9,9 +9,21 @@ export class PrismaUserGateway implements UserGateway {
         return user?.role || 'USER';
     }
 
-    async getAllUsers(): Promise<User[]> {
-        const users = await prisma.user.findMany()
-        return users.map(UserMapper.toDomain);
+    async getAllUsers(page: number = 1, pageSize: number = 10): Promise<{ users: User[], total: number }> {
+        const skip = (page - 1) * pageSize;
+
+        const [users, total] = await Promise.all([
+            prisma.user.findMany({
+                skip,
+                take: pageSize,
+            }),
+            prisma.user.count(),
+        ]);
+
+        return {
+            users: users.map(UserMapper.toDomain),
+            total,
+        };
     }
 
     async getUserById(userId: string): Promise<User | null> {
