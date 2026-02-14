@@ -1,14 +1,15 @@
 import { Input } from '@/common/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/common/components/ui/select'
-import React from 'react'
-import { MovementTypeEnum } from '../domain/entities'
+import React, { useState } from 'react'
+import { MovementTypeEnum } from '@/features/movements/domain/entities'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CreateMovementForm, CreateMovementSchema } from '../application/dto/create-movement-form.schema'
+import { CreateMovementForm, CreateMovementSchema } from '@/features/movements/application/dto'
 import { Button } from '@base-ui/react'
-import { useCreateMovement } from '../infrastructure/hooks/use-create-movement'
+import { useCreateMovement } from '@/features/movements/infrastructure/hooks'
 import { useAuth } from '@/common/auth/hooks/use-auth'
 import { Spinner } from '@/common/components/ui/spinner'
+import { DialogMovement } from '@/features/movements/presentation/components'
 
 const CreateMovement = () => {
     const form = useForm<CreateMovementForm>({
@@ -23,10 +24,14 @@ const CreateMovement = () => {
 
     const { user } = useAuth();
     const { createMovementAsync, loading } = useCreateMovement();
+    const [open, setOpen] = useState(false);
 
     const onSubmit = async (data: CreateMovementForm) => {
-        await createMovementAsync({ ...data, userId: user?.id || "" });
-        form.reset();
+        await createMovementAsync({ ...data, userId: user?.id || "" })
+            .then(() => {
+                form.reset();
+                setOpen(true);
+            });
     };
 
     return (
@@ -37,6 +42,7 @@ const CreateMovement = () => {
                     <Spinner />
                 </div>
             }
+            <DialogMovement open={open} onOpenChange={setOpen} />
             <div className='flex items-center justify-center w-full h-[calc(100vh-134px)]'>
                 <form className='w-full max-w-4xl flex flex-col' onSubmit={form.handleSubmit(onSubmit)}>
                     <div className='grid grid-cols-2 items-center grid-rows-2 gap-4'>
