@@ -1,117 +1,156 @@
-## Prueba Técnica para Desarrollador Fullstack
+# Sistema de Gestión de Ingresos y Egresos PrevalentWare
 
-### Introducción
+## Introducción
 
-El objetivo de esta prueba técnica es evaluar tus habilidades en el desarrollo de una aplicación fullstack. Deberás implementar un sistema de gestión de ingresos y egresos, la gestión de usuarios y la generación de reportes. El proyecto cuenta con [wireframes](<https://www.figma.com/design/2PINjveveJJ9ZAAwxwNoRK/Wireframes-(Copy)?node-id=0-1&t=6q0Q0id8YnjH9fJt-1>) que pueden servir de guía para el candidato. Sin embargo, el diseño de la interfaz de usuario es libre.
+Bienvenido al **Sistema de Gestión de Ingresos y Egresos PrevalentWare**. Esta aplicación Fullstack está diseñada para ayudar a las organizaciones a realizar un seguimiento de los movimientos financieros, gestionar usuarios y generar reportes detallados. Cuenta con una arquitectura moderna, segura y robusta, aprovechando el poder de **Next.js**, **Supabase** y la **Arquitectura Hexagonal**.
 
-### Requisitos del Proyecto
+Características principales:
+- **Gestión Financiera:** Seguimiento de ingresos y egresos con metadatos detallados (concepto, monto, fecha, usuario).
+- **Gestión de Usuarios:** Herramientas exclusivas para administradores para gestionar usuarios y roles.
+- **Reportes:** Análisis visual y capacidades de exportación a CSV.
+- **Control de Acceso Basado en Roles (RBAC):** Acceso seguro con roles de 'Admin' y 'Usuario'.
 
-#### Funcionalidades Principales
+![Vista Previa del Proyecto](/public/assets/preview_placeholder.png) <!-- Reemplazar con una imagen de vista previa real si está disponible -->
 
-1. **Roles y Permisos**
-   - **Roles:**
-     - **Usuario:** Solo puede acceder a la gestión de movimientos.
-     - **Administrador:** Puede ver los reportes, editar usuarios y agregar movimientos.
-   - **Nota:** Para efectos de prueba, todos los nuevos usuarios deben ser automáticamente asignados con el rol "ADMIN".
+---
 
-2. **Home**
-   - Página de inicio con un menú principal que permite la navegación a tres secciones:
-     - Sistema de gestión de ingresos y gastos (disponible para todos los roles)
-     - Gestión de usuarios (solo para administradores)
-     - Reportes (solo para administradores)
+## 🚀 Comenzando
 
-3. **Sistema de Gestión de Ingresos y Gastos**
-   - **Vista de Ingresos y Egresos**
-     - Implementar una tabla que muestre los ingresos y egresos registrados con las siguientes columnas:
-       - Concepto
-       - Monto
-       - Fecha
-       - Usuario
-     - Botón "Nuevo" para agregar un nuevo ingreso o egreso (solo para administradores).
-   - **Formulario de Nuevo Ingreso/Egreso**
-     - Formulario con los campos:
-       - Monto
-       - Concepto
-       - Fecha
-     - Botón para guardar el nuevo movimiento.
+Sigue estas instrucciones para configurar el proyecto localmente para desarrollo.
 
-4. **Gestión de Usuarios** (solo para administradores)
-   - **Vista de Usuarios**
-     - Tabla que muestre la lista de usuarios con las siguientes columnas:
-       - Nombre
-       - Correo
-       - Teléfono
-       - Acciones (editar usuario)
-   - **Formulario de Edición de Usuario**
-     - Formulario con los campos:
-       - Nombre
-       - Rol
-     - Botón para guardar los cambios.
+### Requisitos Previos
+- Node.js (v18+ recomendado)
+- npm o yarn
+- PostgreSQL (o una instancia de Supabase)
 
-5. **Reportes** (solo para administradores)
-   - Mostrar un gráfico de movimientos financieros.
-   - Mostrar el saldo actual.
-   - Botón para descargar el reporte en formato CSV.
+### Instalación
 
-### Requisitos Técnicos
+1.  **Clonar el repositorio:**
+    ```bash
+    git clone <url_del_repositorio>
+    cd <carpeta_del_repositorio>
+    ```
 
-- **Tecnologías y Herramientas:**
-  - **Frontend:**
-    - Next.js utilizando `pages` router.
-    - TypeScript.
-    - Tailwind CSS.
-    - Shadcn para componentes de la interfaz de usuario.
-    - NextJS API routes para comunicación con el backend.
-  - **Backend:**
-    - NextJS API routes para implementar endpoints REST.
-    - Base de datos de Postgres en Supabase.
-     - **Documentación de API:** Implementar una ruta `/api/docs` que exponga la documentación del API usando OpenAPI/Swagger. Cada endpoint creado debe estar completamente documentado con sus parámetros, respuestas y ejemplos.
-   - **Protección de Datos:**
-     - Implementar control de acceso basado en roles (RBAC) para asegurar que solo los usuarios autorizados puedan acceder a ciertas funcionalidades y datos.
-     - Proteger el backend para que rechace conexiones no autenticadas.
-   - **Autenticación:**
-     - Utilizar [Better Auth](https://www.better-auth.com/) con [GitHub](https://github.com/settings/developers) como proveedor de autenticación y [Prisma](https://prisma.io) como adaptador para la autenticación por sesiones de base de datos.
-     - **IMPORTANTE:** Todos los nuevos usuarios que se registren deben ser automáticamente asignados con el rol "ADMIN" para facilitar las pruebas de la aplicación.
-   - **Pruebas unitarias**  - El candidato debe agregar al menos 3 pruebas unitarias donde considere necesario.
-  - **Despliegue:**
-    - Desplegar el proyecto en Vercel.
+2.  **Instalar dependencias:**
+    ```bash
+    npm install
+    ```
 
-### Entregables
+3.  **Configuración del Entorno:**
+    Crea un archivo `.env` en el directorio raíz y configura las variables de tu base de datos y autenticación (consulta `.env.example` si está disponible).
 
-1. **Código Fuente:**
-   - Repositorio en GitHub con el código fuente del proyecto.
-   - Incluir un archivo README con instrucciones claras sobre cómo ejecutar el proyecto localmente y cómo desplegarlo en Vercel.
+4.  **Ejecutar Servidor de Desarrollo:**
+    ```bash
+    npm run dev
+    ```
+    La aplicación estará disponible en [http://localhost:3000](http://localhost:3000).
 
-2. **Despliegue:**
-   - Proyecto desplegado en Vercel con la URL proporcionada.
+---
 
-### Criterios de Evaluación
+## 🧪 Pruebas
 
-- **Funcionalidad:**
-  - Cumplimiento de todos los requisitos funcionales.
-  - Correcta implementación del CRUD para ingresos, egresos y usuarios.
-  - Generación y descarga de reportes en formato CSV.
+Aseguramos la calidad del código mediante pruebas rigurosas de API y End-to-End (E2E).
 
-- **Calidad del Código:**
-  - Calidad y claridad del código.
-  - Uso adecuado de las mejores prácticas de desarrollo.
-  - Estructura del proyecto.
-  - Documentación completa de la API con OpenAPI/Swagger.
+### Pruebas Unitarias y de API
+Ejecuta la suite de pruebas Jest para verificar la lógica del backend y los endpoints de la API:
+```bash
+npm run test
+```
 
-- **Diseño y UX:**
-  - Usabilidad de la interfaz.
-  - Implementación de un diseño atractivo.
+### Pruebas End-to-End (E2E)
+Utilizamos **Cypress** para pruebas de integración full-stack.
 
-- **Pruebas y Documentación:**
-  - Cobertura de pruebas unitarias.
-  - Calidad de los comentarios dentro del proyecto.
+Para abrir el corredor de pruebas interactivo de Cypress:
+```bash
+npm run cypress:open
+```
 
-- **Seguridad:**
-  - Implementación efectiva de control de acceso basado en roles (RBAC).
-  - Protección adecuada de los datos sensibles.
+Para ejecutar pruebas en modo headless (útil para CI/CD):
+```bash
+npm run cypress:run
+```
 
-- **Notas**:
-  - El aplicativo no debe contener diseño responsivo.
-  - El candidato puede utilizar el código cargado en este repositorio. Sin embargo, esta no es una condición necesaria y el candidato puede iniciar el proyecto de 0 si lo desea.
-  - El candidato puede cambiar las versiones de las librerías si lo considera necesario.
-  - El candidato debe compartir el acceso al repositorio de GitHub y el .env a los correos mlopera@prevalentware.com, jdsanchez@prevalentware.com y dfsorza@prevalentware.com
+---
+
+## ☁️ Despliegue
+
+Este proyecto está optimizado para su despliegue en **Vercel**. Puedes desplegarlo utilizando la interfaz web o mediante la consola (**Vercel CLI**).
+
+### Desplegando con Vercel CLI (Consola)
+
+1. **Instalar Vercel CLI globalmente:**
+   ```bash
+   npm install -g vercel
+   ```
+
+2. **Iniciar sesión:**
+   ```bash
+   vercel login
+   ```
+
+3. **Desplegar el proyecto:**
+   Ejecuta el siguiente comando en la raíz del proyecto y sigue las instrucciones:
+   ```bash
+   vercel
+   ```
+
+4. **Desplegar a producción:**
+   Una vez configurado, puedes desplegar la versión de producción con:
+   ```bash
+   vercel --prod
+   ```
+
+### Desplegando desde la Interfaz Web
+
+1. Sube tu código a un repositorio de GitHub.
+2. Inicia sesión en [Vercel](https://vercel.com/) y haz clic en **"New Project"**.
+3. Importa tu repositorio de GitHub.
+4. Configura las **Variables de Entorno** en el panel de Vercel (replica tu configuración local de `.env`).
+5. Haz clic en **"Deploy"**.
+
+Vercel construirá y desplegará automáticamente tu aplicación Next.js.
+
+---
+
+## 🏗️ Arquitectura
+
+Este proyecto sigue un patrón de **Arquitectura Hexagonal (Puertos y Adaptadores)** para asegurar la separación de responsabilidades, escalabilidad y mantenibilidad.
+
+### Resumen de la Estructura
+
+- **Capa de Dominio (Domain Layer):** Contiene reglas de negocio y entidades específicas de la empresa. Está aislada de frameworks externos.
+- **Capa de Aplicación (Application Layer):** Contiene casos de uso que orquestan el flujo de datos hacia y desde las entidades de dominio.
+- **Capa de Infraestructura (Infrastructure Layer):** Implementa interfaces definidas por el dominio (repositorios, adaptadores de base de datos, servicios externos).
+- **Capa de Presentación (Presentation Layer/UI):** Componentes React y páginas Next.js que interactúan con la capa de aplicación.
+
+**Diagrama:**
+
+![Arquitectura Hexagonal](public/assets/architecture.png)
+
+> El diagrama anterior ilustra cómo la lógica de negocio central permanece independiente de tecnologías externas como la base de datos o la interfaz de usuario.
+
+---
+
+## 📅 Planeación
+
+El proceso de desarrollo siguió una fase de planificación estructurada.
+
+**Diagrama de Planeación:**
+
+![Diagrama de Planeación](public/assets/planning.png)
+
+> Solo el rol de Admin puede acceder a las funciones completas de reportes y gestión de usuarios, como se ilustra en el flujo.
+
+---
+
+## 📋 Backlog
+
+Hacemos seguimiento de nuestro progreso, funcionalidades y errores utilizando un Tablero de Proyecto de GitHub. Puedes ver el estado actual y la hoja de ruta aquí:
+
+👉 **[Ver Backlog del Proyecto](https://github.com/users/haroldCoder/projects/8/views/1)**
+
+![Backlog](public/assets/backlog.png)
+
+---
+
+**Nota:** Para los requisitos originales de la prueba técnica, por favor consulta [REQUIREMENTS.md](./REQUIREMENTS.md).
