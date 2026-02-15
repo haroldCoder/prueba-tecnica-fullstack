@@ -74,7 +74,7 @@ const UpdateUser = () => {
                             name="name"
                             control={control}
                             render={({ field }) => (
-                                <Input placeholder='Nombre' {...field} />
+                                <Input placeholder='Nombre' id='name' {...field} />
                             )}
                         />
                     </div>

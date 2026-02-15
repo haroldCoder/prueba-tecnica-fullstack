@@ -1,0 +1,23 @@
+[
+    {
+        "id": "user-001",
+        "name": "Juan Pérez",
+        "email": "juan.perez@example.com",
+        "phone": "+52 555 123 4567",
+        "role": "ADMIN"
+    },
+    {
+        "id": "user-002",
+        "name": "María García",
+        "email": "maria.garcia@example.com",
+        "phone": "+52 555 987 6543",
+        "role": "USER"
+    },
+    {
+        "id": "user-003",
+        "name": "Carlos Rodríguez",
+        "email": "carlos.rodriguez@example.com",
+        "phone": "+52 555 456 7890",
+        "role": "USER"
+    }
+]
