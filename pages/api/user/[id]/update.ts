@@ -74,7 +74,7 @@ export default protectedHandler(async function handler(req: NextApiRequest, res:
 
         await useCase.execute(id, { role, name });
 
-        return res.status(200).json(JSON.stringify({ message: "User updated successfully" }));
+        return res.status(200).json({ message: "User updated successfully" });
     } catch (error: any) {
         return res.status(400).json({
             message: error.message ?? "Unexpected error",

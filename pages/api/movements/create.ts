@@ -60,7 +60,7 @@ export default protectedHandler(async function handler(req, res) {
 
         await useCase.execute({ type, concept, amount, date, userId });
 
-        return res.status(200).json(JSON.stringify({ message: "Movement created successfully" }));
+        return res.status(200).json({ message: "Movement created successfully" });
     } catch (error: any) {
         return res.status(400).json({
             message: error.message ?? "Unexpected error",
