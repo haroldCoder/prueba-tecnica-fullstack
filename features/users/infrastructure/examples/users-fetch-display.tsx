@@ -2,7 +2,7 @@ import { useFetchUsers } from "../hooks/use-fetch-users";
 
 // ejemplo de uso de useFetchUsers
 export const UsersFetchDisplay = () => {
-    const { data, isLoading, error } = useFetchUsers();
+    const { data, isLoading, error } = useFetchUsers({});
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -16,10 +16,10 @@ export const UsersFetchDisplay = () => {
         <div>
             <h1>Users</h1>
             <ul>
-                {data?.map((user) => (
+                {data?.users.map((user) => (
                     <li key={user.id}>{user.name}</li>
                 ))}
             </ul>
         </div>
     );
-}
+};

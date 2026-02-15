@@ -1,7 +1,5 @@
-import Home from "@/features/home/presentation/home";
+import Home from '@/features/home/presentation/home';
 
-const HomePage = () => {
-    return <Home />;
-};
+const HomePage = () => <Home />;
 
 export default HomePage;

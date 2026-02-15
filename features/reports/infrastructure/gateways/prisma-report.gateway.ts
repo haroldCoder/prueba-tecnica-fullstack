@@ -25,7 +25,7 @@ export class PrismaReportGateway implements ReportGateway {
      * @returns {ChartMovementsResponse} Datos estructurados para el gráfico.
      */
     async generateChartMovements(): Promise<ChartMovementsResponse> {
-        const movements = await this.movementsGateway.getMovements();
+        const { movements } = await this.movementsGateway.getMovements();
 
         const sortedMovements = movements.sort((a, b) =>
             a.date.getTime() - b.date.getTime()

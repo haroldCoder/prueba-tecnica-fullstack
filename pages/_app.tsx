@@ -8,7 +8,6 @@ import { NavMenuMain } from '@/common/components/NavMenuMain';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/common/components/ui/sonner';
 
-
 const App = ({ Component, pageProps }: AppProps) => {
   const { isAuthenticated, isLoading, user } = useAuth();
   const router = useRouter();
@@ -39,7 +38,7 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
+      <div className='min-h-screen flex items-center justify-center bg-black'>
         <Spinner />
       </div>
     );
@@ -47,7 +46,7 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   if (!isAuthenticated && !isPublicRoute) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
+      <div className='min-h-screen flex items-center justify-center bg-black'>
         <Spinner />
       </div>
     );
@@ -55,8 +54,14 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {isAuthenticated && user && !isDocsRoute && !isPublicRoute && <NavMenuMain userId={user.id} />}
-      <div className={!isAuthenticated || isDocsRoute || isPublicRoute ? "" : "p-4"}>
+      {isAuthenticated && user && !isDocsRoute && !isPublicRoute && (
+        <NavMenuMain userId={user.id} />
+      )}
+      <div
+        className={
+          !isAuthenticated || isDocsRoute || isPublicRoute ? '' : 'p-4'
+        }
+      >
         <Component {...pageProps} />
         <Toaster position='top-center' richColors />
       </div>
