@@ -1,10 +1,6 @@
-import React from 'react'
-import CreateMovement from '@/features/movements/presentation/create-movement'
+import React from 'react';
+import CreateMovement from '@/features/movements/presentation/create-movement';
 
-const CreateMovementPage = () => {
-    return (
-        <CreateMovement />
-    )
-}
+const CreateMovementPage = () => <CreateMovement />;
 
-export default CreateMovementPage
+export default CreateMovementPage;

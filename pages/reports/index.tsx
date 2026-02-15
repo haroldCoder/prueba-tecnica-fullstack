@@ -1,10 +1,6 @@
-import React from 'react'
-import Reports from '@/features/reports/presentation/reports'
+import React from 'react';
+import Reports from '@/features/reports/presentation/reports';
 
-const ReportsPage = () => {
-    return (
-        <Reports />
-    )
-}
+const ReportsPage = () => <Reports />;
 
-export default ReportsPage
+export default ReportsPage;
