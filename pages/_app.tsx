@@ -55,8 +55,8 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {isAuthenticated && user && !isDocsRoute && <NavMenuMain userId={user.id} />}
-      <div className={!isAuthenticated ? "" : "p-4"}>
+      {isAuthenticated && user && !isDocsRoute && !isPublicRoute && <NavMenuMain userId={user.id} />}
+      <div className={!isAuthenticated || isDocsRoute || isPublicRoute ? "" : "p-4"}>
         <Component {...pageProps} />
         <Toaster position='top-center' richColors />
       </div>
