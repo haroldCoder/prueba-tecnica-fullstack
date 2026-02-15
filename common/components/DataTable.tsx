@@ -113,6 +113,7 @@ export const DataTable = <T,>({ columns, data, className, pagination, loading }:
                                     }}
                                     className={pagination.currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
                                     text=""
+                                    data-testid="pagination-previous"
                                 />
                             </PaginationItem>
 
@@ -145,6 +146,7 @@ export const DataTable = <T,>({ columns, data, className, pagination, loading }:
                                     }}
                                     className={pagination.currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
                                     text=""
+                                    data-testid="pagination-next"
                                 />
                             </PaginationItem>
                         </PaginationContent>

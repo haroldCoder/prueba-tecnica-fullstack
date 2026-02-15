@@ -1,0 +1,26 @@
+[
+    {
+        "id": "mov-001",
+        "concept": "Salario Enero",
+        "amount": 5000,
+        "date": "2026-01-15",
+        "type": "INCOME",
+        "userId": "user-001"
+    },
+    {
+        "id": "mov-002",
+        "concept": "Renta Departamento",
+        "amount": 1500,
+        "date": "2026-01-05",
+        "type": "EXPENSE",
+        "userId": "user-001"
+    },
+    {
+        "id": "mov-003",
+        "concept": "Bonus Proyecto",
+        "amount": 2000,
+        "date": "2026-02-01",
+        "type": "INCOME",
+        "userId": "user-002"
+    }
+]
