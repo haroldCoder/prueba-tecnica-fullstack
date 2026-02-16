@@ -24,6 +24,7 @@ const Movements = () => {
 
         return movementsData.movements.map((movement) => ({
             ...movement,
+            amount: movement.amount.toLocaleString('es-CO', { style: 'currency', currency: 'COP' }),
             date: format(new Date(movement.date), 'yyyy/MM/dd'),
         }))
     }, [movementsData])

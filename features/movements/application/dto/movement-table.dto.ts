@@ -1,6 +1,6 @@
 export interface MovementTableDTO {
     concept: string
-    amount: number
+    amount: string
     date: string
     user: string
 }
