@@ -15,7 +15,7 @@ import { QueryParamsDto } from '@/common/infrastructure/dto';;
 
 const Movements = () => {
     const { user } = useAuth();
-    const [params, setParams] = useState<QueryParamsDto>({ page: 1, pageSize: 2 });
+    const [params, setParams] = useState<QueryParamsDto>({ page: 1, pageSize: 10 });
     const { data: dataRole, isLoading } = useUserRole(user?.id || '');
     const { data: movementsData, isLoading: movementsLoading } = useFetchMovements({ params });
 
