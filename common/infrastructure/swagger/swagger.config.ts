@@ -1,3 +1,4 @@
+import 'tsconfig-paths/register';
 import swaggerJsdoc from 'swagger-jsdoc';
 
 const options: swaggerJsdoc.Options = {
@@ -14,12 +15,10 @@ const options: swaggerJsdoc.Options = {
         },
         servers: [
             {
-                url: 'http://localhost:3000',
-                description: 'Servidor de desarrollo',
-            },
-            {
-                url: 'https://api.production.com',
-                description: 'Servidor de producción',
+                url: process.env.NODE_ENV === 'development'
+                    ? 'http://localhost:3000'
+                    : 'https://prueba-tecnica-fullstack-beige.vercel.app',
+                description: 'Servidor actual',
             },
         ],
         components: {
@@ -246,7 +245,7 @@ const options: swaggerJsdoc.Options = {
             },
         ],
     },
-    apis: ['./pages/api/**/*.ts'], // Ruta a tus archivos de API
+    apis: [process.cwd() + '/pages/api/**/*.ts', process.cwd() + '/pages/api/**/*.js',], // Ruta a tus archivos de API
 };
 
 export const swaggerSpec = swaggerJsdoc(options);

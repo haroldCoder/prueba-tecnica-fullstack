@@ -1,0 +1,740 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Documentation - Prueba Técnica Fullstack",
+    "version": "1.0.0",
+    "description": "Documentación completa de la API REST del proyecto",
+    "contact": {
+      "name": "API Support",
+      "email": "support@example.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://prueba-tecnica-fullstack-beige.vercel.app",
+      "description": "Production Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "CookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "better-auth.session_token"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "emailVerified": {
+            "type": "boolean"
+          },
+          "image": {
+            "type": "string",
+            "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "USER"
+            ],
+            "nullable": true
+          },
+          "banned": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Movement": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "INCOME",
+              "EXPENSE"
+            ]
+          },
+          "amount": {
+            "type": "number"
+          },
+          "concept": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/auth/{id}/role": {
+      "get": {
+        "summary": "Obtiene el rol de un usuario específico",
+        "description": "Endpoint protegido que retorna el rol asignado a un usuario mediante su ID",
+        "tags": [
+          "Authentication",
+          "Users"
+        ],
+        "security": [
+          {
+            "CookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID único del usuario"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rol del usuario obtenido exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "role": {
+                      "type": "string",
+                      "enum": [
+                        "ADMIN",
+                        "USER"
+                      ],
+                      "nullable": true,
+                      "description": "Rol del usuario"
+                    }
+                  }
+                },
+                "example": {
+                  "role": "ADMIN"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID de usuario inválido o error en la solicitud",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "Invalid user id"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Unauthorized"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Método no permitido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Method Not Allowed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/docs": {
+      "get": {
+        "summary": "Obtiene la especificación OpenAPI en formato JSON",
+        "tags": [
+          "Documentation"
+        ],
+        "responses": {
+          "200": {
+            "description": "Especificación OpenAPI"
+          }
+        }
+      }
+    },
+    "/api/movements/all": {
+      "get": {
+        "summary": "Obtiene todos los movimientos (ingresos y egresos) con paginación",
+        "description": "Endpoint protegido que retorna una lista paginada de movimientos del usuario",
+        "tags": [
+          "Movements"
+        ],
+        "security": [
+          {
+            "CookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "description": "Número de página a obtener"
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            },
+            "description": "Cantidad de elementos por página"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de movimientos obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "movements": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Movement"
+                      },
+                      "description": "Lista de movimientos de la página actual"
+                    },
+                    "total": {
+                      "type": "integer",
+                      "description": "Número total de movimientos disponibles"
+                    }
+                  },
+                  "example": {
+                    "movements": [],
+                    "total": 0
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error al obtener movimientos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          },
+          "405": {
+            "description": "Método no permitido"
+          }
+        }
+      }
+    },
+    "/api/movements/create": {
+      "post": {
+        "summary": "Crea un nuevo movimiento (ingreso o egreso)",
+        "description": "Endpoint protegido para registrar un nuevo movimiento financiero",
+        "tags": [
+          "Movements"
+        ],
+        "security": [
+          {
+            "CookieAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMovementInput"
+              },
+              "example": {
+                "type": "INCOME",
+                "amount": 1500.5,
+                "concept": "Salario mensual",
+                "date": "2026-02-12T10:00:00Z"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Movimiento creado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Movement"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos o error al crear movimiento",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          },
+          "405": {
+            "description": "Método no permitido"
+          }
+        }
+      }
+    },
+    "/api/reports/chart": {
+      "get": {
+        "summary": "Obtiene todos los movimientos individuales para gráficos",
+        "description": "Endpoint protegido que retorna arreglos con TODOS los montos individuales de ingresos y egresos.\nCada elemento en los arreglos representa un movimiento individual ordenado por fecha.\n- Si el movimiento es INCOME: el valor aparece en el arreglo 'income' y 0 en 'expense'\n- Si el movimiento es EXPENSE: el valor aparece en el arreglo 'expense' y 0 en 'income'\n- labels: contiene las fechas de cada movimiento en formato YYYY-MM-DD\n",
+        "tags": [
+          "Reports"
+        ],
+        "security": [
+          {
+            "CookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Datos del gráfico obtenidos exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "chart": {
+                      "type": "object",
+                      "properties": {
+                        "labels": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Arreglo de fechas en formato YYYY-MM-DD para cada movimiento"
+                        },
+                        "income": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "description": "Arreglo con todos los montos de ingresos (0 si el movimiento es egreso)"
+                        },
+                        "expense": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "description": "Arreglo con todos los montos de egresos (0 si el movimiento es ingreso)"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "chart": {
+                    "labels": [
+                      "2026-02-01",
+                      "2026-02-05",
+                      "2026-02-10",
+                      "2026-02-15"
+                    ],
+                    "income": [
+                      1500,
+                      0,
+                      2000,
+                      0
+                    ],
+                    "expense": [
+                      0,
+                      500,
+                      0,
+                      800
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          },
+          "405": {
+            "description": "Método no permitido"
+          }
+        }
+      }
+    },
+    "/api/reports/csv-report": {
+      "get": {
+        "summary": "Genera un reporte en formato CSV con encabezados",
+        "description": "Endpoint protegido que genera y retorna un reporte financiero en formato CSV.\n\n**Características:**\n- Incluye fila de encabezados en la primera línea\n- Muestra el nombre del usuario que generó el reporte (no solo el ID)\n- Ordena los reportes por fecha de generación (más reciente primero)\n- Formatea las fechas en formato ISO (YYYY-MM-DD)\n\n**Columnas del CSV:**\n1. ID - Identificador único del reporte\n2. Total Ingresos - Suma total de ingresos\n3. Total Egresos - Suma total de egresos\n4. Balance - Diferencia entre ingresos y egresos\n5. Generado Por - Nombre del usuario que generó el reporte\n6. Fecha de Generación - Fecha en formato YYYY-MM-DD\n",
+        "tags": [
+          "Reports"
+        ],
+        "security": [
+          {
+            "CookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reporte CSV generado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "csv": {
+                      "type": "string",
+                      "description": "Contenido del archivo CSV con encabezados y datos"
+                    }
+                  }
+                },
+                "example": {
+                  "csv": "ID,Total Ingresos,Total Egresos,Balance,Generado Por,Fecha de Generación\nabc-123,15000,8500,6500,Juan Pérez,2026-02-13\ndef-456,12000,9000,3000,María García,2026-02-12"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          },
+          "405": {
+            "description": "Método no permitido"
+          }
+        }
+      }
+    },
+    "/api/reports/total-balance": {
+      "get": {
+        "summary": "Obtiene el balance total",
+        "description": "Endpoint protegido que calcula y retorna el balance total (ingresos - egresos)",
+        "tags": [
+          "Reports"
+        ],
+        "security": [
+          {
+            "CookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Balance total calculado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Balance"
+                },
+                "example": {
+                  "balance": 2450.75
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          },
+          "405": {
+            "description": "Método no permitido"
+          }
+        }
+      }
+    },
+    "/api/user/{id}": {
+      "get": {
+        "summary": "Obtiene la información de un usuario específico",
+        "description": "Endpoint protegido que retorna los datos de un usuario por su ID",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "CookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID único del usuario a consultar"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario obtenido exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          },
+          "404": {
+            "description": "Usuario no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Método no permitido"
+          }
+        }
+      }
+    },
+    "/api/user/{id}/update": {
+      "put": {
+        "summary": "Actualiza la información de un usuario",
+        "description": "Endpoint protegido para actualizar el rol y/o nombre de un usuario específico",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "CookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID único del usuario a actualizar"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "ADMIN",
+                      "USER"
+                    ],
+                    "description": "Nuevo rol del usuario"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Nuevo nombre del usuario"
+                  }
+                }
+              },
+              "example": {
+                "role": "ADMIN",
+                "name": "Juan Pérez"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuario actualizado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido o error en la actualización",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          },
+          "405": {
+            "description": "Método no permitido"
+          }
+        }
+      }
+    },
+    "/api/users/all": {
+      "get": {
+        "summary": "Obtiene la lista de todos los usuarios con paginación",
+        "description": "Endpoint protegido que retorna una lista paginada de usuarios registrados en el sistema",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "CookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "description": "Número de página a obtener"
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            },
+            "description": "Cantidad de elementos por página"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de usuarios obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "users": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      },
+                      "description": "Lista de usuarios de la página actual"
+                    },
+                    "total": {
+                      "type": "integer",
+                      "description": "Número total de usuarios disponibles"
+                    }
+                  },
+                  "example": {
+                    "users": [],
+                    "total": 0
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error al obtener usuarios",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          },
+          "405": {
+            "description": "Método no permitido"
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}
