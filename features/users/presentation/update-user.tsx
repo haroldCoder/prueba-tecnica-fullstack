@@ -8,6 +8,7 @@ import { useFetchUserById, usersKeys, useUpdateUser } from '@/features/users/inf
 import { Spinner } from '@/common/components/ui/spinner';
 import { roleFormOptions } from '@/features/users/presentation/data';
 import { useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/common/auth/hooks/use-auth';
 
 const UpdateUser = () => {
     const params = useParams();
@@ -15,6 +16,7 @@ const UpdateUser = () => {
     const id = params?.userid as string;
 
     const { data: user, isLoading } = useFetchUserById(id);
+    const { user: userMe } = useAuth();
     const { updateUser, loading: updating } = useUpdateUser();
     const queryClient = useQueryClient();
 
@@ -86,7 +88,7 @@ const UpdateUser = () => {
                             control={control}
                             render={({ field }) => (
                                 <Select
-                                    disabled={user?.id === id}
+                                    disabled={userMe?.id === id}
                                     value={field.value}
                                     onValueChange={field.onChange}
                                 >
