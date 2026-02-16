@@ -67,6 +67,8 @@ export const ChartDataMovements = ({ data, loading }: ChartDataMovementsProps) =
                                 }
                             />
 
+                            <ChartLegend content={<ChartLegendContent />} />
+
                             <Bar
                                 dataKey="income"
                                 fill="var(--color-income)"
