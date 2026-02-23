@@ -10,10 +10,10 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "cypress:run:chrome": "cypress run --browser chrome",
-    "cypress:run:firefox": "cypress run --browser firefox"
+    "cypress:open": "CYPRESS=true cypress open",
+    "cypress:run": "CYPRESS=true cypress run",
+    "cypress:run:chrome": "CYPRESS=true cypress run --browser chrome",
+    "cypress:run:firefox": "CYPRESS=true cypress run --browser firefox"
   },
   "dependencies": {
     "@base-ui/react": "^1.1.0",

@@ -1,40 +1,44 @@
-describe('Verificación de Autenticación Simulada', () => {
+// Correo y contraseña del usuario de prueba (creados por /api/testing/login)
+const TEST_EMAIL = 'test-cypress@example.com'
+const TEST_PASSWORD = 'Cypress@Test1234!'
+
+describe('Verificación de Autenticación', () => {
     beforeEach(() => {
         // Limpiar estado antes de cada prueba
         cy.clearSession()
-    })
 
-    it('debe autenticar exitosamente usando sesión simulada', () => {
-        // Ejecutar el comando de login personalizado
-        // cy.login() ahora visita '/' automáticamente y recarga la página
-        cy.login()
-
-        // Verificar que la cookie de sesión existe
-        cy.getCookie('better-auth.session_token').should('exist')
-        cy.getCookie('better-auth.session_token').should('have.property', 'value')
-
-        // Verificar que NO se muestra el botón de Sign In (indica que estamos autenticados)
-        cy.get('body').should('not.contain', 'Sign In')
-
-        // Verificar que podemos acceder a la información del usuario de prueba
-        cy.get('@testUser').should('exist').then((user: any) => {
-            expect(user).to.have.property('email', 'test-cypress@example.com')
-            expect(user).to.have.property('role', 'ADMIN')
+        // Aseguramos que el usuario de prueba existe en la DB con su contraseña
+        // llamando al endpoint de testing
+        cy.request('POST', '/api/testing/login').then((res) => {
+            expect(res.status).to.eq(200)
+            expect(res.body.ok).to.be.true
         })
     })
 
-    it('debe poder navegar a páginas protegidas después del login', () => {
-        cy.login()
+    it('debe permitir iniciar sesión manualmente con correo y contraseña', () => {
+        // Usar el nuevo comando reutilizable que realiza todo el proceso por UI
+        cy.loginUI(TEST_EMAIL, TEST_PASSWORD)
 
-        // Intentar acceder a una página que requiere autenticación
-        cy.visit('/')
+        // Verificaciones adicionales si son necesarias
+        cy.get('body').should('not.contain', 'Inicia sesión para acceder')
+        cy.log('✅ Login manual exitoso verificado')
+    })
 
-        // Verificar que no somos redirigidos al login
-        cy.url().should('include', '/')
+    it('debe mostrar error con credenciales inválidas', () => {
+        cy.visit('/auth/login')
+
+        cy.get('input#email').type(TEST_EMAIL)
+        cy.get('input#password').type('password-erroneo')
+        cy.get('button[type="submit"]').click()
+
+        // El mensaje de error debe aparecer
+        cy.get('body').should('contain.text', 'Invalid email or password', { timeout: 10000 })
+
+        // La URL debe seguir siendo la de login
+        cy.url().should('include', '/auth/login')
     })
 
     after(() => {
-        // Limpiar sesiones de prueba al finalizar
         cy.task('cleanupTestSessions')
     })
 })

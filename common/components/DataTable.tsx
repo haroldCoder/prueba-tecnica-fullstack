@@ -7,6 +7,7 @@ import { Spinner } from "@/common/components/ui/spinner"
 export type Column<T> = {
     header: string
     accessorKey: keyof T
+    testId?: string
 }
 
 interface DataTableProps<T> {
@@ -75,7 +76,7 @@ export const DataTable = <T,>({ columns, data, className, pagination, loading }:
                 <TableHeader>
                     <TableRow>
                         {columns.map((column, index) => (
-                            <TableHead key={index}>{column.header}</TableHead>
+                            <TableHead data-testid={column.testId}>{column.header}</TableHead>
                         ))}
                     </TableRow>
                 </TableHeader>

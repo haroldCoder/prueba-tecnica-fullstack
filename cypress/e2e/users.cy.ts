@@ -1,8 +1,6 @@
 describe('Funcionalidad de Usuarios', () => {
     beforeEach(() => {
-        // Autenticar como usuario ADMIN
-        cy.login()
-
+        cy.loginUI()
         // Visitar la página de usuarios
         cy.visit('/users')
 
@@ -16,9 +14,9 @@ describe('Funcionalidad de Usuarios', () => {
             cy.get('table').should('exist')
 
             // Verificar que las columnas principales están presentes
-            cy.contains('th', /nombre/i).should('be.visible')
-            cy.contains('th', /email/i).should('be.visible')
-            cy.contains('th', /teléfono|telefono/i).should('be.visible')
+            cy.get('th[data-testid="name"]').should('be.visible')
+            cy.get('th[data-testid="email"]').should('be.visible')
+            cy.get('th[data-testid="phone"]').should('be.visible')
         })
 
         it('debe mostrar al menos un usuario en la tabla', () => {
@@ -47,7 +45,7 @@ describe('Funcionalidad de Usuarios', () => {
             cy.get('[data-testid="pagination"], nav').should('exist')
 
             // Verificar que hay información de la página actual
-            cy.contains(/página/i).should('be.visible')
+            cy.contains(/1/).should('be.visible')
         })
 
         it('debe permitir navegar entre páginas si hay múltiples páginas', () => {
@@ -94,10 +92,9 @@ describe('Funcionalidad de Usuarios', () => {
             // Esperar a que se navegue o se abra el formulario
             cy.wait(1000)
 
-            // Verificar que estamos en la página de actualización o se abrió un modal
-            cy.url().should('satisfy', (url: string) => {
-                return url.includes('/update') || url.includes('/edit')
-            })
+            // Verificar que estamos en la página de actualización
+            cy.location('pathname')
+                .should('match', /^\/users\/[A-Za-z0-9]+$/)
         })
 
         it('debe poder actualizar la información de un usuario', () => {

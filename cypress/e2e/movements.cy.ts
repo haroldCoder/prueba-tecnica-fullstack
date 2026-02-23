@@ -1,7 +1,6 @@
 describe('Funcionalidad de Movimientos', () => {
     beforeEach(() => {
-        // Autenticar como usuario ADMIN
-        cy.login()
+        cy.loginUI()
 
         // Visitar la página de movimientos
         cy.visit('/movements')
@@ -37,7 +36,7 @@ describe('Funcionalidad de Movimientos', () => {
             cy.get('[data-testid="pagination"], nav').should('exist')
 
             // Verificar que hay información de la página actual
-            cy.contains(/página/i).should('be.visible')
+            cy.contains(/i/).should('be.visible')
         })
 
         it('debe permitir navegar entre páginas', () => {

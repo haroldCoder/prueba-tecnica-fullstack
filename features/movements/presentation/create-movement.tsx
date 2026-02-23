@@ -63,6 +63,7 @@ const CreateMovement = () => {
                                 <Input
                                     placeholder="Monto"
                                     inputMode="decimal"
+                                    name='amount'
                                     value={
                                         field.value !== undefined && field.value !== null
                                             ? new Intl.NumberFormat("es-CO").format(field.value)

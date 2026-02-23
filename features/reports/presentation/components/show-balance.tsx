@@ -18,7 +18,7 @@ export const ShowBalance = ({ balance }: ShowBalanceProps) => {
     }, [balance])
 
     return (
-        <div className='flex text-2xl font-semibold items-center gap-2'>
+        <div data-testid='show-balance' className='flex text-2xl font-semibold items-center gap-2'>
             <button onClick={() => setShowBalance(!showBalance)}>
                 {showBalance ? <IoEyeOffSharp /> : <IoEye />}
             </button>

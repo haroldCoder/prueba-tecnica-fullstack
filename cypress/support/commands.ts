@@ -5,80 +5,45 @@
 declare global {
     namespace Cypress {
         interface Chainable {
-            /**
-             * Custom command to simulate login
-             * @example cy.login()
-             */
-            login(): Chainable<void>
-
-            /**
-             * Custom command to clear session
-             * @example cy.clearSession()
-             */
+            loginUI(email?: string, password?: string): Chainable<void>
             clearSession(): Chainable<void>
         }
     }
 }
 
-/**
- * Simula un login para las pruebas E2E
- * Crea un usuario de prueba en la base de datos e intercepta las peticiones
- * de Better Auth para devolver una sesión válida
- */
-Cypress.Commands.add('login', () => {
-    cy.task('createTestSession').then((session: any) => {
-        if (!session || !session.token) {
-            throw new Error('No se pudo crear la sesión de prueba')
-        }
+Cypress.Commands.add('loginUI', (email, password) => {
+    const userEmail = email || 'test-cypress@example.com';
+    const userPassword = password || 'Cypress@Test1234!';
 
-        // Interceptar todas las peticiones a /api/auth/session
-        // y devolver una sesión válida
-        cy.intercept('GET', '/api/auth/session', {
-            statusCode: 200,
-            body: {
-                user: session.user,
-                session: {
-                    id: `session-${Date.now()}`,
-                    userId: session.user.id,
-                    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-                    token: session.token,
-                    ipAddress: '127.0.0.1',
-                    userAgent: 'Cypress/E2E-Test',
-                },
-            },
-        }).as('sessionRequest')
+    // Aseguramos que el usuario de prueba existe en la DB con su contraseña
+    // llamando al endpoint de testing (esto es necesario para que el login de Better Auth funcione)
+    cy.request({
+        method: 'POST',
+        url: '/api/testing/login',
+        failOnStatusCode: true,
+    }).then((res) => {
+        expect(res.status).to.eq(200);
+        expect(res.body.ok).to.be.true;
 
-        // Guardar información del usuario para uso en las pruebas
-        cy.wrap(session.user).as('testUser')
+        // Visitar la página de login
+        cy.visit('/auth/login');
 
-        // Establecer la cookie ANTES de visitar la página para evitar redirecciones
-        cy.setCookie('better-auth.session_token', session.token)
+        // Verificar y rellenar el formulario
+        cy.get('input#email').should('be.visible').type(userEmail);
+        cy.get('input#password').should('be.visible').type(userPassword);
 
-        cy.log('✅ Login simulado exitosamente', session.user.email)
+        // Hacer clic en el botón de iniciar sesión
+        cy.get('button[type="submit"]').click();
 
-        // Visitar la página principal
-        cy.visit('/', {
-            onBeforeLoad: (win: Cypress.AUTWindow) => {
-                // Asegurar que la cookie esté presente en document.cookie antes de que cargue la app
-                // Esto ayuda con la hidratación inicial y verificaciones del lado del cliente
-                win.document.cookie = `better-auth.session_token=${session.token}; path=/; SameSite=Lax`
+        // Esperar a que la redirección ocurra (indicando login exitoso)
+        cy.url().should('not.include', '/auth/login', { timeout: 10000 });
 
-                // Forzar a Better Auth a reconocer la sesión
-                win.localStorage.setItem('better-auth.session_token', session.token)
+        // Verificar que la cookie de sesión existe
+        cy.getCookie('better-auth.session_token').should('exist');
 
-                // Disparar evento de storage para que Better Auth detecte el cambio
-                win.dispatchEvent(new StorageEvent('storage', {
-                    key: 'better-auth.session_token',
-                    newValue: session.token,
-                    storageArea: win.localStorage
-                }))
-            }
-        })
-
-        // Esperar a que la página cargue completamente
-        cy.wait(1000)
-    })
-})
+        cy.log('✅ Login UI exitoso como', userEmail);
+    });
+});
 
 /**
  * Limpia la sesión y cookies

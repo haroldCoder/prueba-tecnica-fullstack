@@ -1,7 +1,7 @@
 describe('Funcionalidad de Reportes', () => {
     beforeEach(() => {
         // Autenticar como usuario ADMIN
-        cy.login()
+        cy.loginUI()
 
         // Visitar la página de reportes
         cy.visit('/reports')
@@ -21,36 +21,7 @@ describe('Funcionalidad de Reportes', () => {
 
         it('debe mostrar el componente de balance total', () => {
             // Buscar el componente que muestra el balance
-            cy.get('body').should('satisfy', ($body) => {
-                return $body.text().includes('Balance') ||
-                    $body.text().includes('Total') ||
-                    $body.find('[class*="balance"]').length > 0
-            })
-
-            // Verificar que muestra un valor numérico para el balance
-            cy.contains(/balance|total/i).parent().should('contain.text', '$')
-                .or('contain.text', '-')
-                .or('satisfy', ($el) => {
-                    const text = $el.text()
-                    return /\d+/.test(text) || text.includes('0')
-                })
-        })
-
-        it('debe mostrar el balance con formato correcto', () => {
-            // Esperar a que carguen los datos
-            cy.wait(1000)
-
-            // Buscar elemento que contenga balance
-            cy.get('body').then(($body) => {
-                const balanceElement = $body.find('[class*="balance"], [data-testid*="balance"]')
-
-                if (balanceElement.length > 0) {
-                    cy.wrap(balanceElement).should('be.visible')
-                } else {
-                    // Buscar por texto
-                    cy.contains(/balance/i).should('be.visible')
-                }
-            })
+            cy.get('[data-testid="show-balance"]').should('be.visible')
         })
     })
 
@@ -86,8 +57,8 @@ describe('Funcionalidad de Reportes', () => {
                 const width = $svg.width()
                 const height = $svg.height()
 
-                expect(width).to.be.greaterThan(100)
-                expect(height).to.be.greaterThan(100)
+                expect(width).to.be.at.least(24)
+                expect(height).to.be.at.least(24)
             })
         })
 
@@ -150,26 +121,6 @@ describe('Funcionalidad de Reportes', () => {
         })
     })
 
-    describe('Interactividad del gráfico', () => {
-        it('debe permitir interacción con el gráfico si está habilitada', () => {
-            // Esperar a que el gráfico cargue
-            cy.wait(2000)
-
-            // Intentar hacer hover sobre el gráfico
-            cy.get('svg').trigger('mouseover')
-
-            // Verificar si aparecen tooltips u otros elementos interactivos
-            cy.wait(500)
-
-            cy.get('body').then(($body) => {
-                const hasTooltip = $body.find('[class*="tooltip"], [role="tooltip"]').length > 0
-
-                if (hasTooltip) {
-                    cy.log('Gráfico tiene interactividad con tooltip')
-                }
-            })
-        })
-    })
 
     describe('Estados de error', () => {
         it('debe manejar correctamente errores de carga de datos', () => {

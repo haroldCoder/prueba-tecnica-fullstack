@@ -4,6 +4,8 @@ import { MovementGateway } from "@/features/movements/domain/gateways";
 import { PrismaMovementsGateway } from "@/features/movements/infrastructure/gateways";
 import { ReportGateway } from "@/features/reports/domain/gateways";
 import { PrismaReportGateway } from "@/features/reports/infrastructure/gateways/prisma-report.gateway";
+import { AuthGateway } from "@/common/domain/auth/gateways";
+import { PrismaAuthGateway } from "@/common/infrastructure/auth/gateways";
 
 export class DiFactory {
     static userGateway(): UserGateway {
@@ -16,5 +18,9 @@ export class DiFactory {
 
     static reportGateway(): ReportGateway {
         return new PrismaReportGateway();
+    }
+
+    static authGateway(): AuthGateway {
+        return new PrismaAuthGateway();
     }
 }
